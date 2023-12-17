@@ -8,7 +8,7 @@ List<CameraDescription>? camera;
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   camera= await availableCameras();
-  runApp(myapp());
+  runApp(const myapp());
 }
 
 class myapp extends StatelessWidget {

@@ -6,7 +6,7 @@ import './navbar.dart';
 
 
 class Home extends StatefulWidget {
-  const Home({Key? key}) : super(key: key);
+  const Home({super.key});
 
   @override
   State<Home> createState() => _HomeState();
@@ -55,11 +55,11 @@ class _HomeState extends State<Home> {
         threshold: 0.1,
         asynch: true,
       );
-      predictions!.forEach((element) {
+      for (var element in predictions!) {
         setState(() {
           output = element["label"];
         });
-      });
+      }
 
       // Process the predictions here
     }
@@ -85,10 +85,10 @@ class _HomeState extends State<Home> {
         ),
       ),
       body: Column(
-        children: [
+        children: <Widget>[
           Padding(
-            padding: EdgeInsets.all(20),
-            child: Container(
+            padding: const EdgeInsets.all(20),
+            child: SizedBox(
               height: MediaQuery.of(context).size.height * 0.7,
               width: MediaQuery.of(context).size.width,
               child: !cameraController!.value.isInitialized
@@ -101,9 +101,9 @@ class _HomeState extends State<Home> {
           ),
           Text(
             output,
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
           ),
-          Navbar()
+          const Expanded(child: Navbar()),
         ],
       ),
     );
