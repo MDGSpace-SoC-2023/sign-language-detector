@@ -1,31 +1,20 @@
 import 'package:flutter/material.dart';
+import './navbar.dart';
 
-import './home.dart';
-import 'package:camera/camera.dart';
 
-List<CameraDescription>? camera;
-
-void main() async{
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  camera= await availableCameras();
-  runApp(const myapp());
+  runApp(MyApp());
 }
 
-class myapp extends StatelessWidget {
-  const myapp({super.key});
+class MyApp extends StatelessWidget {
+  MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(primaryColor: Colors.black),
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: const Home(),
+      home: Navbar(),
     );
   }
 }
-
-
-
-
-
-

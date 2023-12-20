@@ -1,12 +1,9 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:myapp/main.dart';
 import 'package:tflite/tflite.dart';
-import './navbar.dart';
-
 
 class Home extends StatefulWidget {
-  const Home({super.key});
+  const Home({Key? key}) : super(key: key);
 
   @override
   State<Home> createState() => _HomeState();
@@ -15,21 +12,22 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   CameraImage? cameraImage;
   CameraController? cameraController;
-  String output = " ";
+  String output = "";
+  List<CameraDescription>? cameras;
 
   @override
   void initState() {
     super.initState();
+    initializeCamera();
     loadModel();
-    loadCamera();
   }
 
-  loadCamera() {
-    cameraController = CameraController(camera![0], ResolutionPreset.medium);
-    cameraController!.initialize().then((value) {
-      if (!mounted) {
-        return;
-      } else {
+  initializeCamera() async {
+    cameras = await availableCameras();
+    if (cameras != null && cameras!.isNotEmpty) {
+      cameraController = CameraController(cameras![0], ResolutionPreset.medium);
+      await cameraController!.initialize();
+      if (mounted) {
         setState(() {
           cameraController!.startImageStream((imageStream) {
             cameraImage = imageStream;
@@ -37,15 +35,13 @@ class _HomeState extends State<Home> {
           });
         });
       }
-    });
+    }
   }
 
   runModel() async {
     if (cameraImage != null) {
       var predictions = await Tflite.runModelOnFrame(
-        bytesList: cameraImage!.planes.map((plane) {
-          return plane.bytes;
-        }).toList(),
+        bytesList: cameraImage!.planes.map((plane) => plane.bytes).toList(),
         imageHeight: cameraImage!.height,
         imageWidth: cameraImage!.width,
         imageMean: 127.5,
@@ -55,13 +51,11 @@ class _HomeState extends State<Home> {
         threshold: 0.1,
         asynch: true,
       );
-      for (var element in predictions!) {
+      if (predictions != null && predictions.isNotEmpty) {
         setState(() {
-          output = element["label"];
+          output = predictions[0]["label"] ?? "No label found";
         });
       }
-
-      // Process the predictions here
     }
   }
 
@@ -76,36 +70,45 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.black,
         title: const Text(
           "SIGN LANGUAGE DETECTOR",
           style: TextStyle(
-            color: Color.fromARGB(255, 255, 255, 255),
+            color: Colors.white,
             fontWeight: FontWeight.bold,
           ),
         ),
       ),
-      body: Column(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(20),
-            child: SizedBox(
+      body: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            SizedBox(
               height: MediaQuery.of(context).size.height * 0.7,
               width: MediaQuery.of(context).size.width,
-              child: !cameraController!.value.isInitialized
-                  ? Container()
-                  : AspectRatio(
-                      aspectRatio: cameraController!.value.aspectRatio,
-                      child: CameraPreview(cameraController!),
-                    ),
+              child: cameraController != null && cameraController!.value.isInitialized
+                  ? AspectRatio(
+                aspectRatio: cameraController!.value.aspectRatio,
+                child: CameraPreview(cameraController!),
+              )
+                  : Container(),
             ),
-          ),
-          Text(
-            output,
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-          ),
-          const Expanded(child: Navbar()),
-        ],
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: Text(
+                output,
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              ),
+            ),
+            SizedBox(height: 20), // Adjust spacing as needed
+          ],
+        ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    cameraController?.dispose();
+    super.dispose();
   }
 }

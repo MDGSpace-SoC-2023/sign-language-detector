@@ -1,56 +1,84 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import './home.dart';
+import './quiz.dart';
 
 class Navbar extends StatefulWidget {
   const Navbar({super.key});
 
   @override
   State<Navbar> createState() => NavbarState();
-
 }
 
 class NavbarState extends State<Navbar> {
-  @override
-  Widget build(BuildContext context){
-    return Scaffold(
-      bottomNavigationBar: GNav(
-          backgroundColor:Colors.black ,
+  int _selectedIndex = 0;
+  static const List<Widget> _widgetOptions = <Widget>[
+    Home(),
+    quiz(),
+    Text(
+      'Profile'
+    ),
+  ];
 
-          rippleColor: Colors.grey, // tab button ripple color when pressed
-          hoverColor: Colors.grey, // tab button hover color
-          haptic: true, // haptic feedback
-          tabBorderRadius: 15,
-          tabActiveBorder:
-              Border.all(color: Colors.white, width: 1), // tab button border
-          tabBorder:
-              Border.all(color: Colors.grey, width: 1), // tab button border
-          tabShadow: [
-            BoxShadow(color: Colors.grey.withOpacity(0.5), blurRadius: 8)
-          ], // tab button shadow
-          curve: Curves.easeOutExpo, // tab animation curves
-          duration: const Duration(milliseconds: 500), // tab animation duration
-          gap: 8, // the tab button gap between icon and text
-          color: Colors.white, // unselected icon color
-          activeColor: Colors.white, // selected icon and text color
-          iconSize: 24, // tab button icon size
-          tabBackgroundColor:
-              Colors.white54.withOpacity(0.1), // selected tab background color
-          padding: const EdgeInsets.symmetric(
-              horizontal: 20, vertical: 5), // navigation bar padding
-          tabs: const [
-            GButton(
-              icon: Icons.enhance_photo_translate_rounded,
-              text: 'Live translation',
-            ),
-            GButton(
-              icon: Icons.quiz,
-              text: 'quiz',
-            ),
-            GButton(
-              icon: Icons.person,
-              text: 'Profile',
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      // appBar: AppBar(
+      //   elevation: 20,
+      //   title: const Text('Sign Lang'),
+      // ),
+      body:
+      _widgetOptions.elementAt(_selectedIndex),
+
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              blurRadius: 20,
+              color: Colors.black.withOpacity(.1),
             )
-          ]),
+          ],
+        ),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8),
+            child: GNav(
+              rippleColor: Colors.grey[300]!,
+              hoverColor: Colors.grey[100]!,
+              gap: 8,
+              activeColor: Colors.black,
+              iconSize: 24,
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              duration: Duration(milliseconds: 400),
+              tabBackgroundColor: Colors.grey[100]!,
+              color: Colors.black,
+              tabs: [
+                GButton(
+                  icon: Icons.enhance_photo_translate,
+                  text: 'Live translation',
+                ),
+                GButton(
+                  icon: Icons.quiz,
+                  text: 'quiz',
+                ),
+                GButton(
+                  icon: Icons.person,
+                  text: 'Profile',
+                ),
+              ],
+              selectedIndex: _selectedIndex,
+              onTabChange: (index) {
+                setState(() {
+                  _selectedIndex = index;
+                });
+              },
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
