@@ -50,22 +50,31 @@ class _QuizState extends State<quiz> {
     }
   }
 
-  Future<List<dynamic>?> runModel(String path) async {
-    var output = await Tflite.runModelOnImage(
-      path: path,
-      imageMean: 127.5,
-      imageStd: 127.5,
-      numResults: 2,
-      threshold: 0.1,
-      asynch: true,
-    );
-    return output;
+  runModel() async {
+    if (cameraImage != null) {
+      var predictions = await Tflite.runModelOnFrame(
+        bytesList: cameraImage!.planes.map((plane) => plane.bytes).toList(),
+        imageHeight: cameraImage!.height,
+        imageWidth: cameraImage!.width,
+        imageMean: 127.5,
+        imageStd: 127.5,
+        rotation: 90,
+        numResults: 2,
+        threshold: 0.1,
+        asynch: true,
+      );
+      if (predictions != null && predictions.isNotEmpty) {
+        setState(() {
+          output = predictions[0]["label"] ?? "No label found";
+        });
+      }
+    }
   }
 
   Future<void> loadModel() async {
     await Tflite.loadModel(
       model: "assets/detect.tflite",
-      labels: "assets/label.txt",
+      labels: "assets/labels.txt",
     );
   }
 
@@ -87,7 +96,8 @@ class _QuizState extends State<quiz> {
           children: <Widget>[
             Container(
               padding: const EdgeInsets.all(8.0),
-              decoration: BoxDecoration(border: Border.all(color: Colors.black)),
+              decoration:
+                  BoxDecoration(border: Border.all(color: Colors.black)),
               child: Text(randomWord),
             ),
             Padding(
@@ -96,29 +106,34 @@ class _QuizState extends State<quiz> {
                 height: MediaQuery.of(context).size.height * 0.7,
                 width: MediaQuery.of(context).size.width,
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10.0), // Optional: Add border radius
-                  child: cameraController != null && cameraController!.value.isInitialized
+                  borderRadius: BorderRadius.circular(
+                      10.0), // Optional: Add border radius
+                  child: cameraController != null &&
+                          cameraController!.value.isInitialized
                       ? AspectRatio(
-                    aspectRatio: cameraController!.value.aspectRatio,
-                    child: CameraPreview(cameraController!),
-                  )
+                          aspectRatio: cameraController!.value.aspectRatio,
+                          child: CameraPreview(cameraController!),
+                        )
                       : Container(),
                 ),
               ),
             ),
             ElevatedButton(
-              onPressed: () async {
-                if (cameraController != null) {
-                  final XFile image = await cameraController!.takePicture();
-                  var output = await runModel(image.path);
-                  if (output != null && output.isNotEmpty && output[0]["label"] == randomWord) {
-                    setState(() {
-                      randomWord = words[Random().nextInt(words.length)];
-                    });
-                  }
-                }
+              onPressed: () {
+                runModel(); // Run model when the button is pressed
               },
-              child: const Text('Capture and Match'),
+              child: const Text('Capture and Match '),
+            ),
+            Padding(
+              padding: EdgeInsets.all(20),
+              child: output == randomWord
+                  ? () {
+                      setState(() {
+                        randomWord = words[Random().nextInt(words.length)];
+                      });
+                      return Text("Correct");
+                    }()
+                  : Text("Incorrect"),
             ),
             SizedBox(height: 20), // Add some space at the bottom
           ],
