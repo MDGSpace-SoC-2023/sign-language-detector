@@ -1,5 +1,5 @@
-thumbsup
-thumbsdown
-iloveyou
-livelong
-thankyou
+0 thumbsup
+1 thumbsdown
+2 thankyou
+3 iloveyou
+4 livelong
