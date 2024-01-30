@@ -7,9 +7,11 @@ This project is of tkinter based GUI app that can be used to do live sign langua
 * The `quiz.py` is a quiz app where there is a first a start button , on starting the quiz the quiz will get started then the question asking the user to make a specific sign will be asked , the user will make the required and then click on capture image the captuered image is passed to the model and on verifying the option to move to the next option activates , there is a skip option in case the user don't know the sign , finally a total score is given and the total time  the user took to complete the quiz.
 
 # Screenshots
+![Screenshot from 2024-01-30 21-08-30](https://github.com/MDGSpace-SoC-2023/sign-language-detector/assets/147048280/0fb9af2c-e15f-4152-ae2f-be0ce234bcc5)
+![Screenshot from 2024-01-30 21-09-06](https://github.com/MDGSpace-SoC-2023/sign-language-detector/assets/147048280/a0cfa8b3-4dfc-41fa-ba9e-76c6013cd6e6)
 
 # Link to Demo Video 
-
+https://youtu.be/gNkQ21eW05E
 # Installation 
 
 * First clone the library using :
