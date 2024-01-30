@@ -21,6 +21,7 @@ This project is of tkinter based GUI app that can be used to do live sign langua
 
 these are also given in training notebook  , if still some module is not Installed then knidly install it 
 * Then download the model and required files from the following link and paste the folder in the same directory :
+[https://drive.google.com/drive/folders/1hJm6phhAhwWd4CdGDd3MkM9FM6OvuDr1?usp=sharing](https://drive.google.com/drive/folders/1hJm6phhAhwWd4CdGDd3MkM9FM6OvuDr1?usp=sharing)
 
 * Now ,run `main.py` for the live sign language translation 
 * Or run    `quiz.py` for the quiz .
