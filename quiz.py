@@ -19,7 +19,7 @@ paths = {
 }
 
 # Load label map and create category index
-label_map_path = '/home/ronit/Documents/SOC/sign langauge detector/TFODCourse/Tensorflow/workspace/annotations/label_map.pbtxt'
+label_map_path = 'Tensorflow/workspace/annotations/label_map.pbtxt'
 category_index = label_map_util.create_category_index_from_labelmap(label_map_path)
 
 # Load pipeline config and build a detection model
@@ -31,7 +31,7 @@ ckpt = tf.compat.v2.train.Checkpoint(model=detection_model)
 ckpt.restore(os.path.join(paths['CHECKPOINT_PATH'], 'ckpt-21')).expect_partial()
 
 # Load TensorFlow SavedModel for object detection
-model_path = '/home/ronit/Documents/SOC/sign langauge detector/TFODCourse/Tensorflow/workspace/models/my_ssd_mobnet/export/saved_model'
+model_path = 'Tensorflow/workspace/models/my_ssd_mobnet/export/saved_model'
 detect_fn = tf.saved_model.load(model_path)
 
 

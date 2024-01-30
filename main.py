@@ -18,7 +18,7 @@ paths = {
     'CHECKPOINT_PATH': os.path.join('Tensorflow', 'workspace','models','my_ssd_mobnet')
  }
 # Load your label map and create category index
-label_map_path = '/home/ronit/Documents/SOC/sign langauge detector/TFODCourse/Tensorflow/workspace/annotations/label_map.pbtxt'
+label_map_path = 'Tensorflow/workspace/annotations/label_map.pbtxt'
 category_index = label_map_util.create_category_index_from_labelmap(label_map_path)
 
 def extract_class_names(label_map_path):
